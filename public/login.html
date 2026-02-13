@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login- Skeezy Sneaker</title>
+   <link rel="stylesheet" href="style.css">
+</head>
+<body> 
+  
+    <div class="auth-container">
+        <div class="auth-box">
+            <h1>SKEEZY SNEAKERS</h1>
+            <p class="tagline">Admin Portal</p>
+
+
+            
+
+              <form id="loginForm" class="auth-form">
+                <h2>Login</h2>
+                <input type="email" id ="loginEmail" placeholder="Email" required>
+                <input type="password" id="loginPassword" placeholder="Password" required>
+                <button type="submit">Login</button>
+                <p class="error-message" id="loginError"></p>
+              </form>
+             
+              <form id="registerForm" class="auth-form hidden">
+                <h2>Register</h2>
+                <input type="text" id="regUsername" placeholder="Username" required>
+                <input type="email" id="regEmail" placeholder="Email" required>
+                <input type="password" id="regPassword" placeholder="Password(min 6 char)" required>
+                <select id="regRole">
+                    <option value="user">User</option>
+                    <option value="admin">Admin</option>
+                </select>
+                <button type="submit">Register</button>
+                <p class="error-message" id="regError"></p>
+                </form>
+
+
+                <p class="toggle-form">
+                    <span id="toggleText">Don't have an account?</span>
+                    <a href="#" id="toggleBtn">Register</a>
+                </p>
+         </div>
+    </div>
+     
+    <script src="auth.js"></script>
+</body>
+</html>

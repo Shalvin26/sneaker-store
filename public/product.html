@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Product Details - Sneaker Store</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Navigation -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <h1 class="logo">SNEAKER STORE</h1>
+      <div class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="cart.html">🛒 Cart (<span id="cartCount">0</span>)</a>
+        <a href="login.html">Admin</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Product Detail Section -->
+  <section class="product-detail">
+    <div class="product-detail-container">
+      
+      <!-- Product Image -->
+      <div class="product-image-section">
+        <img id="productImage" src="" alt="Product" class="main-product-image">
+      </div>
+
+      <!-- Product Info -->
+      <div class="product-info-section">
+        <p class="product-brand-detail" id="productBrand"></p>
+        <h1 class="product-title" id="productName"></h1>
+        <p class="product-price-detail" id="productPrice"></p>
+        
+        <div class="product-description" id="productDescription"></div>
+        
+        <!-- Size Selection -->
+        <div class="size-selection">
+          <h3>Select Size</h3>
+          <div class="size-options" id="sizeOptions"></div>
+        </div>
+        
+        <!-- Quantity -->
+        <div class="quantity-selection">
+          <h3>Quantity</h3>
+          <div class="quantity-controls">
+            <button id="decreaseQty">-</button>
+            <span id="quantity">1</span>
+            <button id="increaseQty">+</button>
+          </div>
+        </div>
+        
+        <!-- Add to Cart Button -->
+        <button class="add-to-cart-btn" id="addToCartBtn">Add to Cart</button>
+        
+        <!-- Specifications -->
+        <div class="specifications" id="specifications">
+          <h3>Specifications</h3>
+          <div id="specsList"></div>
+        </div>
+      </div>
+      
+    </div>
+  </section>
+
+  <script src="product.js"></script>
+</body>
+</html>

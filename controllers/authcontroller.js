@@ -1,8 +1,9 @@
 const User=require('../models/User');
 const jwt=require('jsonwebtoken');
 
-const JWT_SECRET='sqwsaseendx';
+const JWT_SECRET = process.env.JWT_SECRET || 'sqwsaseendx';
 // new user registration
+//const JWT_SECRET='sqwsaseendx';
 
 async function register(req,res){
     try{

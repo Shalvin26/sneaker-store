@@ -1,5 +1,5 @@
 const express = require('express');
-const connectDB = require('./connection');
+const connectDB = require('./connections');
 const sneakerRoutes = require('./routes/sneakerRoutes');
 const authRoutes = require('./routes/authRoutes');
 const uploadRoutes = require('./routes/uploadRoutes');

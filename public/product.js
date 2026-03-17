@@ -130,15 +130,17 @@ document.getElementById('addToCartBtn').addEventListener('click', () => {
   // window.location.href = 'cart.html';
 });
 
-// Update cart count in navbar
+// Update cart count
 function updateCartCount() {
   const cart = JSON.parse(localStorage.getItem('cart')) || [];
   const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
-  const cartCountElement = document.getElementById('cartCount');
-  if (cartCountElement) {
-    cartCountElement.textContent = totalItems;
+  const badge = document.getElementById('cartBadge');
+  if (badge) {
+    badge.textContent = totalItems;
   }
 }
+
+updateCartCount();
 
 // Load product on page load
 loadProduct();

@@ -12,17 +12,18 @@ function checkAuth() {
 }
 
 // Check auth on page load
-if (!checkAuth()) {
-  // Redirect handled in checkAuth
-}
+checkAuth();
 
 // Logout functionality
-document.getElementById('logoutBtn').addEventListener('click', (e) => {
-  e.preventDefault();
-  localStorage.removeItem('token');
-  localStorage.removeItem('user');
-  window.location.href = 'index.html';
-});
+const logoutBtn = document.getElementById('logoutBtn');
+if (logoutBtn) {
+  logoutBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    window.location.href = 'index.html';
+  });
+}
 
 // Load all sneakers for admin
 async function loadAdminSneakers() {
@@ -31,10 +32,16 @@ async function loadAdminSneakers() {
     const sneakers = await response.json();
     
     const grid = document.getElementById('adminSneakerGrid');
+    
+    if (!grid) {
+      console.error('Grid element not found!');
+      return;
+    }
+    
     grid.innerHTML = '';
     
     if (sneakers.length === 0) {
-      grid.innerHTML = '<p style="text-align: center; grid-column: 1/-1;">No sneakers yet. Add your first one!</p>';
+      grid.innerHTML = '<p style="text-align: center; grid-column: 1/-1; padding: 2rem; color: #999;">No sneakers yet. Add your first one!</p>';
       return;
     }
     
@@ -48,10 +55,15 @@ async function loadAdminSneakers() {
           <h3 class="product-name">${sneaker.name}</h3>
           <p class="product-price">₹${sneaker.price}</p>
           <p class="product-size">Size: ${sneaker.size}</p>
-          ${sneaker.description ? `<p style="color: #666; font-size: 0.9rem;">${sneaker.description}</p>` : ''}
-          <button class="delete-btn" onclick="deleteSneaker('${sneaker._id}')">Delete</button>
+          ${sneaker.description ? `<p style="color: #999; font-size: 0.9rem; margin-top: 0.5rem;">${sneaker.description}</p>` : ''}
+          <button class="delete-btn" data-id="${sneaker._id}">Delete</button>
         </div>
       `;
+      
+      // Add delete event listener
+      const deleteBtn = card.querySelector('.delete-btn');
+      deleteBtn.addEventListener('click', () => deleteSneaker(sneaker._id));
+      
       grid.appendChild(card);
     });
   } catch (error) {
@@ -59,119 +71,152 @@ async function loadAdminSneakers() {
   }
 }
 
-// Add new sneaker
 // Image preview
-document.getElementById('imageFile').addEventListener('change', (e) => {
-  const file = e.target.files[0];
-  if (file) {
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      const preview = document.getElementById('imagePreview');
-      preview.src = e.target.result;
-      preview.style.display = 'block';
-    };
-    reader.readAsDataURL(file);
-  }
-});
-
-// Add sneaker with file upload
-document.getElementById('addSneakerform').addEventListener('submit', async (e) => {
-  e.preventDefault();
-  
-  const token = localStorage.getItem('token');
-  const successMsg = document.getElementById('successMsg');
-  
-  // Upload image first
-  const imageFile = document.getElementById('imageFile').files[0];
-  let imagePath = '';
-  
-  if (imageFile) {
-  const formData = new FormData();
-  formData.append('image', imageFile);
-  
-  try {
-    const uploadResponse = await fetch('/api/upload', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${token}`
-      },
-      body: formData
-    });
-    
-    console.log('Upload status:', uploadResponse.status); // DEBUG
-    
-    // Check if response is actually JSON
-    const contentType = uploadResponse.headers.get('content-type');
-    if (!contentType || !contentType.includes('application/json')) {
-      console.error('Upload response is not JSON'); // DEBUG
-      successMsg.textContent = 'Upload error: Invalid response';
-      successMsg.style.color = '#ff4444';
-      return;
+const imageFileInput = document.getElementById('imageFile');
+if (imageFileInput) {
+  imageFileInput.addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const preview = document.getElementById('imagePreview');
+        if (preview) {
+          preview.src = e.target.result;
+          preview.style.display = 'block';
+        }
+      };
+      reader.readAsDataURL(file);
     }
-    
-    const uploadData = await uploadResponse.json();
-    console.log('Upload data:', uploadData); // DEBUG
-    
-    if (!uploadResponse.ok) {
-      successMsg.textContent = 'Image upload failed: ' + uploadData.message;
-      successMsg.style.color = '#ff4444';
-      return;
-    }
-    
-    imagePath = uploadData.imagePath;
-    console.log('Image path:', imagePath); // DEBUG
-    
-  } catch (error) {
-    console.error('Upload catch error:', error); // DEBUG - THIS IS KEY
-    successMsg.textContent = 'Upload error: ' + error.message;
-    successMsg.style.color = '#ff4444';
-    return;
-  }
+  });
 }
-  
-  // Create sneaker
-  const sneakerData = {
-    name: document.getElementById('name').value,
-    brand: document.getElementById('brand').value,
-    price: document.getElementById('price').value,
-    size: document.getElementById('size').value,
-    image: imagePath,
-    description: document.getElementById('description').value
-  };
-  
-  try {
-    const response = await fetch('/api/sneakers', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      },
-      body: JSON.stringify(sneakerData)
-    });
+
+// Add new sneaker
+const addSneakerForm = document.getElementById('addSneakerForm');
+if (addSneakerForm) {
+  addSneakerForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
     
-    const data = await response.json();
+    const token = localStorage.getItem('token');
+    const successMsg = document.getElementById('successMsg');
     
-    if (response.ok) {
-      successMsg.textContent = 'Sneaker added successfully!';
-      successMsg.style.color = '#00cc44';
-      
-      document.getElementById('addSneakerForm').reset();
-      document.getElementById('imagePreview').style.display = 'none';
-      
-      loadAdminSneakers();
-      
-      setTimeout(() => {
-        successMsg.textContent = '';
-      }, 3000);
-    } else {
-      successMsg.textContent = data.message;
-      successMsg.style.color = '#ff4444';
+    if (!token) {
+      alert('Session expired. Please login again.');
+      window.location.href = 'login.html';
+      return;
     }
-  } catch (error) {
-    successMsg.textContent = 'Failed to add sneaker';
-    successMsg.style.color = '#ff4444';
-  }
-});
+    
+    console.log('Form submitted');
+    
+    // Get the image file
+    const imageFile = document.getElementById('imageFile').files[0];
+    let imagePath = '';
+    
+    // Upload image first if file is selected
+    if (imageFile) {
+      const formData = new FormData();
+      formData.append('image', imageFile);
+      
+      try {
+        console.log('Uploading image...');
+        
+        const uploadResponse = await fetch('/api/upload', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`
+          },
+          body: formData
+        });
+        
+        console.log('Upload status:', uploadResponse.status);
+        console.log('Upload headers:', uploadResponse.headers);
+        
+        // Check if response is JSON
+        const contentType = uploadResponse.headers.get('content-type');
+        console.log('Content-Type:', contentType);
+        
+        if (!contentType || !contentType.includes('application/json')) {
+          const textResponse = await uploadResponse.text();
+          console.error('Non-JSON response:', textResponse);
+          successMsg.textContent = 'Upload failed: Server returned non-JSON response';
+          successMsg.style.color = '#d32f2f';
+          return;
+        }
+        
+        const uploadData = await uploadResponse.json();
+        console.log('Upload data:', uploadData);
+        
+        if (!uploadResponse.ok) {
+          successMsg.textContent = 'Image upload failed: ' + (uploadData.message || 'Unknown error');
+          successMsg.style.color = '#d32f2f';
+          return;
+        }
+        
+        imagePath = uploadData.imagePath;
+        console.log('Image path:', imagePath);
+        
+      } catch (error) {
+        console.error('Upload catch error:', error);
+        successMsg.textContent = 'Upload error: ' + error.message;
+        successMsg.style.color = '#d32f2f';
+        return;
+      }
+    } else {
+      successMsg.textContent = 'Please select an image';
+      successMsg.style.color = '#d32f2f';
+      return;
+    }
+    
+    // Create sneaker with uploaded image
+    const sneakerData = {
+      name: document.getElementById('name').value,
+      brand: document.getElementById('brand').value,
+      price: document.getElementById('price').value,
+      size: document.getElementById('size').value,
+      image: imagePath,
+      description: document.getElementById('description').value
+    };
+    
+    console.log('Sneaker data:', sneakerData);
+    
+    try {
+      const response = await fetch('/api/sneakers', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(sneakerData)
+      });
+      
+      const data = await response.json();
+      console.log('Add sneaker response:', data);
+      
+      if (response.ok) {
+        successMsg.textContent = 'Sneaker added successfully!';
+        successMsg.style.color = '#388e3c';
+        
+        // Clear form
+        addSneakerForm.reset();
+        const preview = document.getElementById('imagePreview');
+        if (preview) preview.style.display = 'none';
+        
+        // Reload sneakers
+        loadAdminSneakers();
+        
+        setTimeout(() => {
+          successMsg.textContent = '';
+        }, 3000);
+      } else {
+        successMsg.textContent = 'Failed to add sneaker: ' + (data.message || 'Unknown error');
+        successMsg.style.color = '#d32f2f';
+      }
+    } catch (error) {
+      console.error('Add sneaker error:', error);
+      successMsg.textContent = 'Failed to add sneaker: ' + error.message;
+      successMsg.style.color = '#d32f2f';
+    }
+  });
+}
 
 // Delete sneaker
 async function deleteSneaker(id) {
@@ -181,6 +226,14 @@ async function deleteSneaker(id) {
   
   const token = localStorage.getItem('token');
   
+  if (!token) {
+    alert('Session expired. Please login again.');
+    window.location.href = 'login.html';
+    return;
+  }
+  
+  console.log('Deleting sneaker:', id);
+  
   try {
     const response = await fetch(`/api/sneakers/${id}`, {
       method: 'DELETE',
@@ -189,15 +242,42 @@ async function deleteSneaker(id) {
       }
     });
     
+    console.log('Delete response status:', response.status);
+    
     if (response.ok) {
       loadAdminSneakers();
     } else {
-      alert('Failed to delete sneaker');
+      const data = await response.json();
+      alert('Failed to delete sneaker: ' + (data.message || 'Unknown error'));
     }
   } catch (error) {
-    alert('Error deleting sneaker');
+    console.error('Delete error:', error);
+    alert('Error deleting sneaker: ' + error.message);
   }
 }
 
-// Load sneakers on page load
+// Update cart count
+function updateCartCount() {
+  const cart = JSON.parse(localStorage.getItem('cart')) || [];
+  const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+  const badge = document.getElementById('cartBadge');
+  if (badge) {
+    badge.textContent = totalItems;
+  }
+}
+
+// Navbar scroll animation
+window.addEventListener('scroll', () => {
+  const navbar = document.querySelector('.navbar');
+  if (navbar) {
+    if (window.scrollY > 50) {
+      navbar.classList.add('scrolled');
+    } else {
+      navbar.classList.remove('scrolled');
+    }
+  }
+});
+
+// Load sneakers and update cart on page load
 loadAdminSneakers();
+updateCartCount();

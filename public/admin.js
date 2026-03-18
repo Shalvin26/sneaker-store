@@ -91,7 +91,7 @@ if (imageFileInput) {
 }
 
 // Add new sneaker
-const addSneakerForm = document.getElementById('addSneakerForm');
+const addSneakerForm = document.getElementById('addSneakerform');
 if (addSneakerForm) {
   addSneakerForm.addEventListener('submit', async (e) => {
     e.preventDefault();

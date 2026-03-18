@@ -1,54 +1,51 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Panel - Skeezy Sneaker</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Panel - Sneaker Store</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-     <!--navbar-->
-    <nav class="navbar">
-        <div class="nav-container">
-            <h1 class="logo">ADMIN PANEL</h1>
-            <div class="nav-links">
-                <a href="index.html">Home</a>
-                <a href="#" id="logoutBtn">Logout</a>
-            </div>
-        </div>
-    </nav>
-    
-    <!--sneaker from for admin-->
+  <!-- Navigation -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <h1 class="logo" onclick="window.location.href='index.html'">SNEAKER STORE</h1>
+      <div class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="cart.html" class="cart-link">
+          🛒 Cart <span class="cart-badge" id="cartBadge">0</span>
+        </a>
+        <a href="#" id="logoutBtn">Logout</a>
+      </div>
+    </div>
+  </nav>
 
-    <div class="admin-container">
-        <div class="admin-form-section">
-            <h2>Add New Sneaker</h2>
-            <form id="addSneakerform">
-                <input type="text" id ="name" placeholder="Sneaker Name" required>
-                <input type="text" id="brand" placeholder="Brand Name" required>
-                <input type="number" id ="price" placeholder="Price" required>
-                <input type="number" id="size" placeholder="Size" required>
-                <input type="file" id="imageFile" accept="image/*" required>
-                <img id="imagePreview" style="max-width: 200px; margin: 10px 0; display: none;">
-                <textarea id="description" placeholder="description" rows="3"></textarea> 
-
-                
-                <button type="submit">Add Sneaker</button>
-            </form>
-            <p class="sucess-message" id="successMsg"></p>
-        </div>
-
-    <!--sneaker list for admin to see-->
-
-        <div class="admin-products-section">
-            <h2>Manage Sneakers</h2>
-            <div id="adminSneakerGrid" class="product-grid">
-                <!-- products displayed heree-->
-
-            </div>
-        </div>
+  <!-- Admin Container -->
+  <div class="admin-container">
+    <!-- Add Sneaker Form -->
+    <div class="admin-form-section">
+      <h2>Add New Sneaker</h2>
+      <form id="addSneakerform">
+        <input type="text" id="name" placeholder="Sneaker Name" required>
+        <input type="text" id="brand" placeholder="Brand" required>
+        <input type="number" id="price" placeholder="Price" required>
+        <input type="number" id="size" placeholder="Size" required>
+        <input type="file" id="imageFile" accept="image/*" required>
+        <img id="imagePreview" style="max-width: 200px; margin: 10px 0; display: none; border-radius: 6px; border: 1px solid #e5e5e5;">
+        <textarea id="description" placeholder="Description" rows="3"></textarea>
+        <button type="submit">Add Sneaker</button>
+      </form>
+      <p class="success-message" id="successMsg"></p>
     </div>
 
-<script src="admin.js"></script>
+    <!-- Sneaker List -->
+    <div class="admin-products-section">
+      <h2>Manage Sneakers</h2>
+      <div id="adminSneakerGrid" class="product-grid"></div>
+    </div>
+  </div>
+
+  <script src="admin.js"></script>
 </body>
 </html>

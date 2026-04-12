@@ -8,11 +8,13 @@ router.post('/', verifyToken, isAdmin, upload.single('image'), (req, res) => {
     if (!req.file) {
       return res.status(400).json({ message: 'No file uploaded' });
     }
-    
-    const filePath = `/uploads/${req.file.filename}`;
+
+    // Cloudinary gives a URL instead of a filename
+    const imageUrl = req.file.path;
+
     res.json({ 
       message: 'Image uploaded successfully',
-      imagePath: filePath 
+      imagePath: imageUrl  // this is now a full Cloudinary URL
     });
   } catch (error) {
     res.status(500).json({ message: error.message });

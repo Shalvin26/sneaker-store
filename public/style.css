@@ -1394,3 +1394,63 @@ body {
   }
 }
 
+
+
+
+.hero {
+  position: relative;
+  min-height: 85vh;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  background: #0a0a0a;
+  overflow: hidden;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 10;
+  text-align: left;
+  max-width: 450px;
+  padding: 2rem;
+  margin-left: 8rem;
+}
+
+.hero-content h1 {
+  color: #ffffff;
+}
+
+.hero-content p {
+  color: #aaaaaa;
+}
+
+
+.hero-svg {
+  position: absolute;
+  top: 15%;
+  right: 0;
+  width: 60%;
+  height: 100%;
+  pointer-events: none;
+}
+
+@media (max-width: 768px) {
+  .hero-svg {
+    display: none;
+  }
+
+  .hero-content {
+    margin-left: 1.5rem;
+    margin-right: 1.5rem;
+    text-align: center;
+  }
+
+  .hero-content h1 {
+    font-size: 2.5rem;
+  }
+
+  .hero {
+    justify-content: center;
+    background: #0a0a0a;
+  }
+}

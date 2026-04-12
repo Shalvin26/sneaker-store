@@ -28,7 +28,7 @@ async function getSneakerById(req,res) {
 //Create new Sneaker
 async function createSneaker(req,res) {
     try{
-        if(!req.file){
+        if(!req.body.image){
             return res.status(400).json({message:'Image is required'});
         }
 
@@ -37,7 +37,7 @@ async function createSneaker(req,res) {
             brand:req.body.brand,
             price:req.body.price,
             size:req.body.size,
-            image:req.file.path,  // Cloudinary URL
+            image:req.body.image,  // Cloudinary URL sent from frontend
             description:req.body.description
         });
 
